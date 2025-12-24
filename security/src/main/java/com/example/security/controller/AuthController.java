@@ -3,20 +3,14 @@ package com.example.security.controller;
 import com.example.security.dto.LoginResponse;
 import com.example.security.entity.User;
 import com.example.security.repository.UserRepository;
-import com.example.security.utility.JwtUtil;
+import com.example.security.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
-import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
