@@ -1,10 +1,12 @@
 package com.example.security.security;
 
+import com.example.security.repository.BlackListedTokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,10 +21,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final CustomUserDetailService userDetailsService;
+    private final BlackListedTokenRepository blackListedTokenRepository;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return request.getRequestURI().startsWith("/auth/");
+        return request.getRequestURI().startsWith("/auth");
     }
 
     @Override
@@ -40,6 +43,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
+
+        if (blackListedTokenRepository.existsByToken(token)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         if (!jwtUtil.isTokenValid(token)) {
             filterChain.doFilter(request, response);
